@@ -4,17 +4,20 @@
 */
 class OutsourceChat {
 
-	public $outsource_chat_id = '';
+	public $secured_session_id = '';
+	public $chat_id = '';
 	private $url = 'https://api.livechatinc.com/';
 	private $license_id = '';
 	private $group_id = '';
 
-	public function __construct($license_id, $group_id=''){
+	public function __construct($license_id, $group_id='', $chat_id='', $secured_session_id=''){
         	$this->license_id=$license_id;
     		$this->group_id=$group_id;
+		$this->secured_session_id=$secured_session_id;
+		$this->chat_id=$chat_id;
     	}
 		
-	public function createChat($chat_id, $message, $name='Visitor', $email=''){   
+	public function createChat($message, $name='Visitor', $email=''){   
 		$paramters = array(
 		    "licence_id"        =>  $this->license_id,
 		    "welcome_message"   =>  $message,
@@ -25,36 +28,36 @@ class OutsourceChat {
 		if($email!='')$paramters['email']=$email;
 		if($name!='')$paramters['name']=$name;
 
-		$return = $this->json_post("visitors/".$chat_id."/chat/start",$paramters);
+		$return = $this->json_post("visitors/".$this->chat_id."/chat/start",$paramters);
 		$this->outsource_chat_id = $return['secured_session_id'];
 		return $return['secured_session_id'];
 	}
     
-	public function sendChat($chat_id, $session_id, $message){
+	public function sendChat($message){
 		$paramters = array(
     			"licence_id"        =>  $this->license_id,
 		    	"message"           =>  $message,
-			"secured_session_id"=>  $session_id,
+			"secured_session_id"=>  $this->secured_session_id,
 		);        
-		$return = $this->json_post("visitors/".$chat_id."/chat/send_message",$paramters);
+		$return = $this->json_post("visitors/".$this->chat_id."/chat/send_message",$paramters);
 		return $return['success'];
 	}
     
-	public function closeChat($chat_id, $session_id){
+	public function closeChat(){
 		$paramters = array(
 		    "licence_id"        =>  $this->license_id,
-		    "secured_session_id"=>  $session_id,
+		    "secured_session_id"=>  $this->secured_session_id,
 		);
-		$return = $this->json_post("visitors/".$chat_id."/chat/close",$paramters);
+		$return = $this->json_post("visitors/".$this->chat_id."/chat/close",$paramters);
 		return $return['success'];
 	}
     
-	public function getPendingChats($chat_id, $session_id, $last_message_id=0){
+	public function getPendingChats($last_message_id=0){
 		$paramters = array(
 		    "licence_id"        =>  $this->license_id,
-		    "secured_session_id"=>  $session_id,
+		    "secured_session_id"=>  $this->secured_session_id,
 		);
-		$return = $this->json_get("visitors/".$chat_id."/chat/get_pending_messages",$paramters);
+		$return = $this->json_get("visitors/".$this->chat_id."/chat/get_pending_messages",$paramters);
 		return $return;
 	}
 
