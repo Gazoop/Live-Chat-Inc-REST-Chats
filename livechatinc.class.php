@@ -2,7 +2,7 @@
 /*
 // Live Chat Inc Basic REST Class - Created by James Parmee Morris
 */
-class OutsourceChat {
+class LiveChatInc {
 
 	public $secured_session_id = '';
 	public $chat_id = '';
